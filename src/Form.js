@@ -37,6 +37,11 @@ const Button = styled.button`
   cursor: pointer;
 `;
 
+const ErrorMessage = styled.div`
+  color: red;
+  margin-top: 5px;
+`;
+
 const Form = () => {
   const [formData, setFormData] = useState({
     ref_no: '',
@@ -46,12 +51,20 @@ const Form = () => {
     mobile_no: '',
   });
 
+  const [error, setError] = useState(false);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
   const handleSubmit = async () => {
+    // Check if any required field is empty
+    if (Object.values(formData).some((value) => value === '')) {
+      setError(true);
+      return; // Stop the submission
+    }
+
     try {
       const response = await fetch('http://localhost:3000/applicants', {
         method: 'POST',
@@ -78,24 +91,55 @@ const Form = () => {
     <FormContainer>
       <FormGroup>
         <Label>Reference Number:</Label>
-        <Input type="text" name="ref_no" value={formData.ref_no} onChange={handleChange} />
+        <Input
+          type="text"
+          name="ref_no"
+          value={formData.ref_no}
+          onChange={handleChange}
+          required
+        />
       </FormGroup>
       <FormGroup>
         <Label>Customer Name:</Label>
-        <Input type="text" name="cust_name" value={formData.cust_name} onChange={handleChange} />
+        <Input
+          type="text"
+          name="cust_name"
+          value={formData.cust_name}
+          onChange={handleChange}
+          required
+        />
       </FormGroup>
       <FormGroup>
         <Label>Financing Amount:</Label>
-        <Input type="text" name="financing_amount" value={formData.financing_amount} onChange={handleChange} />
+        <Input
+          type="text"
+          name="financing_amount"
+          value={formData.financing_amount}
+          onChange={handleChange}
+          required
+        />
       </FormGroup>
       <FormGroup>
         <Label>Tenure:</Label>
-        <Input type="text" name="tenure" value={formData.tenure} onChange={handleChange} />
+        <Input
+          type="text"
+          name="tenure"
+          value={formData.tenure}
+          onChange={handleChange}
+          required
+        />
       </FormGroup>
       <FormGroup>
         <Label>Mobile Number:</Label>
-        <Input type="text" name="mobile_no" value={formData.mobile_no} onChange={handleChange} />
+        <Input
+          type="text"
+          name="mobile_no"
+          value={formData.mobile_no}
+          onChange={handleChange}
+          required
+        />
       </FormGroup>
+      {error && <ErrorMessage>Please fill in all required fields.</ErrorMessage>}
       <Button onClick={handleSubmit}>Submit</Button>
     </FormContainer>
   );
