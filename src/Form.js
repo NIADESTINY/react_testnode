@@ -51,17 +51,19 @@ const Form = () => {
     mobile_no: '',
   });
 
-  const [error, setError] = useState(false);
+  const [errorField, setErrorField] = useState(null);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
+    setErrorField(null); // Clear error when user starts typing in a field
   };
 
   const handleSubmit = async () => {
     // Check if any required field is empty
-    if (Object.values(formData).some((value) => value === '')) {
-      setError(true);
+    const emptyField = Object.keys(formData).find((field) => formData[field] === '');
+    if (emptyField) {
+      setErrorField(emptyField);
       return; // Stop the submission
     }
 
@@ -139,7 +141,7 @@ const Form = () => {
           required
         />
       </FormGroup>
-      {error && <ErrorMessage>Please fill in all required fields.</ErrorMessage>}
+      {errorField && <ErrorMessage>{`Please fill in the ${errorField.replace('_', ' ')}.`}</ErrorMessage>}
       <Button onClick={handleSubmit}>Submit</Button>
     </FormContainer>
   );
